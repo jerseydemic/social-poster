@@ -24,16 +24,17 @@ interface Account {
     icon: React.ElementType;
     color: string;
     providerId?: string; // NextAuth provider ID
+    comingSoon?: boolean;
 }
 
 const accounts: Account[] = [
     { id: "instagram", name: "Instagram", icon: Instagram, color: "from-pink-500 to-purple-500", providerId: "facebook" }, // Instagram uses Facebook login
-    { id: "tiktok", name: "TikTok", icon: TikTokIcon, color: "from-cyan-400 to-pink-500" }, // Custom provider needed
+    { id: "tiktok", name: "TikTok", icon: TikTokIcon, color: "from-cyan-400 to-pink-500", comingSoon: true }, // Custom provider needed
     { id: "youtube", name: "YouTube", icon: Youtube, color: "from-red-500 to-red-600", providerId: "google" },
     { id: "facebook", name: "Facebook", icon: Facebook, color: "from-blue-500 to-blue-600", providerId: "facebook" },
-    { id: "twitter", name: "Twitter", icon: Twitter, color: "from-sky-400 to-sky-500", providerId: "twitter" },
-    { id: "pinterest", name: "Pinterest", icon: PinterestIcon, color: "from-red-600 to-red-700" },
-    { id: "linkedin", name: "LinkedIn", icon: Linkedin, color: "from-blue-600 to-blue-700", providerId: "linkedin" },
+    { id: "twitter", name: "Twitter", icon: Twitter, color: "from-sky-400 to-sky-500", providerId: "twitter", comingSoon: true },
+    { id: "pinterest", name: "Pinterest", icon: PinterestIcon, color: "from-red-600 to-red-700", comingSoon: true },
+    { id: "linkedin", name: "LinkedIn", icon: Linkedin, color: "from-blue-600 to-blue-700", providerId: "linkedin", comingSoon: true },
     { id: "threads", name: "Threads", icon: Share2, color: "from-zinc-100 to-zinc-300", providerId: "facebook" },
 ];
 
@@ -80,22 +81,25 @@ export default function AccountsPage() {
                                     <Icon className="w-6 h-6 text-white fill-current" />
                                 </div>
                                 <button
-                                    onClick={() => handleConnect(account.providerId)}
+                                    onClick={() => !account.comingSoon && handleConnect(account.providerId)}
+                                    disabled={account.comingSoon}
                                     className={cn(
                                         "px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 border",
-                                        isConnected
-                                            ? "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20"
-                                            : "bg-white/5 text-zinc-400 border-white/10 hover:bg-white/10 hover:text-white"
+                                        account.comingSoon
+                                            ? "bg-white/5 text-zinc-600 border-white/5 cursor-not-allowed"
+                                            : isConnected
+                                                ? "bg-green-500/10 text-green-400 border-green-500/20 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20"
+                                                : "bg-white/5 text-zinc-400 border-white/10 hover:bg-white/10 hover:text-white"
                                     )}
                                 >
-                                    {isConnected ? "Connected" : "Connect"}
+                                    {account.comingSoon ? "Coming Soon" : isConnected ? "Connected" : "Connect"}
                                 </button>
                             </div>
 
                             <div>
                                 <h3 className="text-lg font-semibold text-white">{account.name}</h3>
                                 <p className="text-sm text-zinc-500 mt-1">
-                                    {isConnected ? "@username" : "Not connected"}
+                                    {account.comingSoon ? "Integration pending" : isConnected ? "@username" : "Not connected"}
                                 </p>
                             </div>
                         </motion.div>
